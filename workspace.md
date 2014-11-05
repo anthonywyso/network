@@ -76,10 +76,10 @@ http://neo4j.com/developer/guide-data-modeling/
 
 Nodes/Labels -- Properties
 
-1. (Player) {name, id}
-2. (Coach) {name, id}
-3. (College) {name, id}
-4. (High School) {name, id}
+1. (Player) {name, id} -- DONE
+2. (Coach) {name, id} -- DONE
+3. (College) {name, id} -- DONE
+4. (High School) {name, id} -- DONE
 5. (Professional) Team {name, id}
 6. (Award) {name}
 
@@ -90,7 +90,10 @@ Relationships
 3. [PLAYS_FOR]->(Team)
 4. [PLAYED_IN]->(Game)
 5. [AWARDED]->(Award)
-6. 
+
+???
+
+1. Time-series
 
 
 
@@ -99,6 +102,7 @@ Relationships
 Find the best coach/development staff for certain types of players (traditional 1-5 positions; roles) -- http://www.wired.com/2013/03/basketballs-hidden-positions/
 
 http://maxdemarzi.com/2012/05/31/key-players/#more-998
+http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580&h=341
 
 - Disrupt: Who should be removed from the network to disrupt it?
 - Protect: Who should be protected in order to keep the network functioning?
@@ -107,9 +111,10 @@ http://maxdemarzi.com/2012/05/31/key-players/#more-998
 - Redirect: Who should be moved to alter social flows?
 
 ##Prior Work
-http://edschembor.github.io/blog/index.html
-http://thecodebarbarian.wordpress.com/2014/02/14/crunching-30-years-of-nba-data-with-mongodb-aggregation/
-http://www.neo4j.org/graphgist?8493604
+- http://edschembor.github.io/blog/index.html
+- http://thecodebarbarian.wordpress.com/2014/02/14/crunching-30-years-of-nba-data-with-mongodb-aggregation/
+- http://www.neo4j.org/graphgist?8493604
+- https://github.com/SocioPatterns/neo4j-dynagraph/wiki/Representing-time-dependent-graphs-in-Neo4j
 
 ##Presenting/hosting Project
 http://www.graphenedb.com/pricing.html
