@@ -1,18 +1,32 @@
 #Planning
 
 ##Timeline
-11/03 --  
-11/04 --  
-11/05 --  
-11/06 --  
-11/07 --  
-11/08 --  
-11/09 --  
-11/10 --  
-11/11 --  
-11/12 --  
-11/13 --  
-11/14 --  
+- 11/03 -- TODO plan project
+	- Built general data model for graph network
+	- Need to flesh out model to account for time/duration information
+- 11/04 -- TODO get all basic data to build network
+	- Scraped hs/college data for players/coaches
+	- Found prior work on time series
+- 11/05 -- TODO gather college/pro duration data for players/coaches; clean data; process into Neo4j/NetworkX/GraphLab/Gephi
+	- pass
+- 11/06 -- TODO 
+	- pass
+- 11/07 -- TODO Have a working database in Neo4j
+	- pass
+- 11/08 -- TODO 
+	- pass
+- 11/09 -- TODO 
+	- pass
+- 11/10 -- TODO 
+	- pass
+- 11/11 -- TODO 
+	- pass
+- 11/12 -- TODO 
+	- pass
+- 11/13 -- TODO 
+	- pass
+- 11/14 -- TODO 
+	- pass
 
 ##Data Pipeline
 Scrapy/Python --> csv --> clean --> Neo4j --> Maybe Gephi/Graphlab
@@ -76,10 +90,10 @@ http://neo4j.com/developer/guide-data-modeling/
 
 Nodes/Labels -- Properties
 
-1. (Player) {name, id} -- DONE
-2. (Coach) {name, id} -- DONE
-3. (College) {name, id} -- DONE
-4. (High School) {name, id} -- DONE
+1. (Player) {name, id} -- DONE 11/04
+2. (Coach) {name, id} -- DONE 11/04
+3. (College) {name, id} -- DONE 11/04
+4. (High School) {name, id} -- DONE 11/04
 5. (Professional) Team {name, id}
 6. (Award) {name}
 
