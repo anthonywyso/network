@@ -100,14 +100,14 @@ class CoachSeasonLogSpider(CrawlSpider):
     rules = (
         Rule(
             LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::a[contains(@href, 'coach')]"),
-            callback='parse',
+            callback='parse_history',
             follow=True
             ),
     )
 
-    def parse(self, response):
+    def parse_history(self, response):
         sel = Selector(response)
-        seasons = sel.xpath("//tbody/tr")
+        seasons = sel.xpath("//table[@id='stats']/descendant::tbody/tr")
         for season in seasons:
             loader = ValueItemLoader(item=CoachSeasonLogItem(), selector=season)
             loader.add_value('id', response.url, re="\w+\d")

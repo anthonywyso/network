@@ -110,10 +110,10 @@ Relationships
 1. Time-series
 
 
-
-
 ##What does this solve?
 Find the best coach/development staff for certain types of players (traditional 1-5 positions; roles) -- http://www.wired.com/2013/03/basketballs-hidden-positions/
+
+Year-end awards (NBA-All Team Honors, DPOY, MVP, )
 
 http://maxdemarzi.com/2012/05/31/key-players/#more-998
 http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580&h=341
@@ -135,3 +135,5 @@ http://www.graphenedb.com/pricing.html
 
 ##Outstanding Questions/Obstacles
 1. How to model time/duration in graph db (such as isolating the time when someone starts and ends playing for a team)
+	- Weighted edges (days involved with team)
+2. Determine weights/size of nodes

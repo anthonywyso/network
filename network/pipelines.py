@@ -10,7 +10,7 @@ import py2neo
 class CsvExportPipeline(object):
 
     def process_item(self, item, spider):
-        exporter = CsvItemExporter(open('data/%s.csv' % spider.name, 'a+b'))
+        exporter = CsvItemExporter(open('data/%s.csv' % spider.name, 'a+b'), include_headers_line=False)
         exporter.export_item(item)
         return item
 

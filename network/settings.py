@@ -18,9 +18,14 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 
 COOKIES_ENABLED = False
 
-# ITEM_PIPELINES = {
-#     'network.pipelines.CsvExportPipeline': 300
-# }
+DATABASE = {
+    'drivername': 'sqlite',
+    'database': '../../ball/data/nbadb.sqlite'
+}
+
+ITEM_PIPELINES = {
+    'network.pipelines.CsvExportPipeline': 300
+}
 
 HTTPCACHE_ENABLED = True
 HTTPCACHE_EXPIRATION_SECS = 0  # Set to 0 to never expire
