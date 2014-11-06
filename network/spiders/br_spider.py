@@ -69,6 +69,7 @@ class PlayerHSSpider(CrawlSpider):
 
 class PlayerRAPMSpider(CrawlSpider):
     '''
+    Does not account for 2014 RAPM due to different table format from source
     USAGE: scrapy crawl players_rapm
     '''
     name = "players_rapm"
@@ -87,6 +88,24 @@ class PlayerRAPMSpider(CrawlSpider):
             loader = ValueItemLoader(item=PlayerRAPMItem(), selector=player)
             loader.add_value('season', response.url, re="(?<=ratings/)\w+")
             for i, value in izip(range(1, 6), ['name', 'rapm_off', 'rapm_def', 'rapm_both', 'poss']):
+                loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
+            yield loader.load_item()
+
+class PlayerRAPMNewSpider(Spider):
+    '''
+    Does not account for 2014 RAPM due to different table format from source
+    USAGE: scrapy crawl players_rapm_new
+    '''
+    name = "players_rapm_new"
+    allowed_domains = ["appspot.com"]
+    start_urls = ["http://stats-for-the-nba.appspot.com/ratings/2014.html"]
+
+    def parse(self, response):
+        players = response.xpath("//table/descendant::tr")
+        for player in players:
+            loader = ValueItemLoader(item=PlayerRAPMItem(), selector=player)
+            loader.add_value('season', response.url, re="(?<=ratings/)\w+")
+            for i, value in izip([2, 3, 4, 5, 8], ['name', 'rapm_off', 'rapm_def', 'rapm_both', 'poss']):
                 loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
             yield loader.load_item()
 

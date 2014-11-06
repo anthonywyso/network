@@ -1,4 +1,4 @@
-#Planning
+#Planning Overview
 
 ##Timeline
 - 11/03 -- TODO plan project
@@ -7,14 +7,16 @@
 - 11/04 -- TODO get all basic data to build network
 	- Scrape hs/college data for players/coaches @done
 	- Research time series representation for graph networks @done
-- 11/05 -- TODO gather team tenure data for players/coaches; clean data	- Clean hs/college data @done
+- 11/05 -- TODO gather team tenure data for players/coaches; clean data
+ 	- Clean hs/college data @done
 	- Scrape coach seasonlog data @done
 	- Clean coach seasonlog data @done
 	- Clean coach awards data @done
-	- Scrape RAPM data 
+	- Scrape RAPM data @done
+	- Clean RAPM data @done
 	- Scrape player awards data @postponed
-- 11/06 -- TODO process into Neo4j/NetworkX/GraphLab/Gephi
-	- Aggregate data (weigh edges on days)
+- 11/06 -- TODO aggregate data; process into Neo4j/NetworkX/GraphLab/Gephi
+	- Aggregate data on tenure (weigh edges on days)
 - 11/07 -- TODO Have a working database in Neo4j
 	- pass
 - 11/08 -- TODO 
