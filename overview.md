@@ -2,10 +2,12 @@
 
 ##Timeline
 - 11/03 -- TODO plan project
-	- Built general data model for graph network @done
-	- Flesh out model to account for time/duration information @done
+	- Built general, "flat" data model for graph network @done
+	- Flesh out "layered" data model to account for time/duration information @done
 - 11/04 -- TODO get all basic data to build network
-	- Scrape hs/college data for players/coaches @done
+	- Scrape hs data for players @done
+	- Scrape college data for players @done
+	- Scrape data for coaches @done
 	- Research time series representation for graph networks @done
 - 11/05 -- TODO gather team tenure data for players/coaches; clean data
  	- Clean hs/college data @done
@@ -14,6 +16,9 @@
 	- Clean coach awards data @done
 	- Scrape RAPM data @done
 	- Clean RAPM data @done
+	- Get total number games per season @done
+	- Calculate edge weights for player to team @done
+	- Calculate edge weights for coach to team
 	- Scrape player awards data @postponed
 - 11/06 -- TODO aggregate data; process into Neo4j/NetworkX/GraphLab/Gephi
 	- Aggregate data on tenure (weigh edges on days)
@@ -136,6 +141,8 @@ http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580
 - http://thecodebarbarian.wordpress.com/2014/02/14/crunching-30-years-of-nba-data-with-mongodb-aggregation/
 - http://www.neo4j.org/graphgist?8493604
 - https://github.com/SocioPatterns/neo4j-dynagraph/wiki/Representing-time-dependent-graphs-in-Neo4j
+- http://maxdemarzi.com/2014/01/31/neo4j-spatial-part-1/
+- http://www.lyonwj.com/mapping-the-worlds-airports-with-neo4j-spatial-and-openflights-part-1/
 
 ##Presenting/hosting Project
 http://www.graphenedb.com/pricing.html
@@ -147,7 +154,9 @@ http://www.graphenedb.com/pricing.html
 	- Time together (games/days), maybe time-based decay
 3. How to determine weights of player nodes
 	- Possibly RAPM (http://stats-for-the-nba.appspot.com/)
-	-Year-end awards (NBA-All Team Honors, DPOY, MVP, ROY, SOY, MIP)
+	- Year-end awards (NBA-All Team Honors, DPOY, MVP, ROY, SOY, MIP)
+	- http://www.basketball-reference.com/friv/
+	- http://basketball.realgm.com/nba/awards/by_type/All-NBA-First-Team/12
 4. How to determine weights/size of coach nodes
 	- Team wins, championships
 5. Do not use institutions, teams as intermediate nodes
