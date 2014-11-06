@@ -4,7 +4,7 @@ from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
 
-from network.items import PlayerItem, PlayerHSItem, CoachItem, CoachSeasonLogItem
+from network.items import PlayerItem, PlayerHSItem, PlayerRAPMItem, CoachItem, CoachSeasonLogItem
 from network.items import ValueItemLoader
 
 from itertools import izip
@@ -67,19 +67,40 @@ class PlayerHSSpider(CrawlSpider):
             yield loader.load_item()
 
 
+class PlayerRAPMSpider(CrawlSpider):
+    '''
+    USAGE: scrapy crawl players_rapm
+    '''
+    name = "players_rapm"
+    allowed_domains = ["appspot.com"]
+    start_urls = ["http://stats-for-the-nba.appspot.com/"]
+    rules = (
+        Rule(
+            LxmlLinkExtractor(restrict_xpaths="//table/descendant::a[contains(@href, 'ratings')]"),
+            callback='parse_crawl',
+            follow=True
+            ),
+    )
+    def parse_crawl(self, response):
+        players = response.xpath("//table/descendant::tr")
+        for player in players:
+            loader = ValueItemLoader(item=PlayerRAPMItem(), selector=player)
+            loader.add_value('season', response.url, re="(?<=ratings/)\w+")
+            for i, value in izip(range(1, 6), ['name', 'rapm_off', 'rapm_def', 'rapm_both', 'poss']):
+                loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
+            yield loader.load_item()
+
+
 class CoachSpider(Spider):
     '''
     USAGE: scrapy crawl coaches --set FEED_URI=data/coaches.csv --set FEED_FORMAT=csv
     '''
     name = "coaches"
     allowed_domains = ["basketball-reference.com"]
-    start_urls = [
-        "http://www.basketball-reference.com/coaches/"
-    ]
+    start_urls = ["http://www.basketball-reference.com/coaches/"]
 
     def parse(self, response):
-        sel = Selector(response)
-        coaches = sel.xpath("//tbody/tr")
+        coaches = response.xpath("//tbody/tr")
         for coach in coaches:
             loader = ItemLoader(item=CoachItem(), selector=coach)
             loader.add_xpath('name', 'td/descendant::a[contains(@href, "coach")]/text()')
@@ -90,13 +111,11 @@ class CoachSpider(Spider):
 
 class CoachSeasonLogSpider(CrawlSpider):
     '''
-    USAGE: scrapy crawl coaches_seasonlog --set FEED_URI=data/coaches_seasonlog.csv --set FEED_FORMAT=csv
+    USAGE: scrapy crawl coaches_seasonlog
     '''
     name = "coaches_seasonlog"
     allowed_domains = ["basketball-reference.com"]
-    start_urls = [
-        "http://www.basketball-reference.com/coaches/"
-    ]
+    start_urls = ["http://www.basketball-reference.com/coaches/"]
     rules = (
         Rule(
             LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::a[contains(@href, 'coach')]"),
@@ -106,13 +125,10 @@ class CoachSeasonLogSpider(CrawlSpider):
     )
 
     def parse_history(self, response):
-        sel = Selector(response)
-        seasons = sel.xpath("//table[@id='stats']/descendant::tbody/tr")
+        seasons = response.xpath("//table[@id='stats']/descendant::tbody/tr")
         for season in seasons:
             loader = ValueItemLoader(item=CoachSeasonLogItem(), selector=season)
             loader.add_value('id', response.url, re="\w+\d")
-            # re.findall('\d{2}', season.xpath("td[%s]/descendant::text()"))  # TODO change season to a single value
-            # loader.add_value('season', season.xpath("td[%s]/descendant::text()"), re="\w+\d")
             for i, value in izip([1, 2, 3, 4, 5, 6, 7, 10], ['season', 'age', 'league', 'team', 'gp', 'w', 'l', 'standing']):
                 loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
             yield loader.load_item()

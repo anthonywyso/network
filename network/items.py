@@ -22,6 +22,15 @@ class PlayerHSItem(Item):
     highschool_state = Field()
 
 
+class PlayerRAPMItem(Item):
+    name = Field()
+    season = Field()
+    rapm_off = Field()
+    rapm_def = Field()
+    rapm_both = Field()
+    poss = Field()
+
+
 class CoachItem(Item):
     name = Field()
     id = Field()
