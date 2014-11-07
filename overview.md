@@ -26,11 +26,11 @@
 	- Build edges players to hs (tenure) @postponed
 	- Scrape college coaches (http://www.sports-reference.com/cbb/coaches/) @postponed
 	- Build edges players to college coaches @postponed
-	- Weigh player nodes -- RAPM @done
-	- Weigh nba coach nodes -- wins @done
-	- Build network amongst players and pro coaches
+	- Weigh nba coach nodes -- wins @postponed
 - 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
-	- pass
+	- Weigh player nodes -- RAPM -- Needs additional cleaning @done
+	- Build single season network amongst players and pro coaches
+	- Put single season players and pro coaches into Neo4j
 - 11/08 -- TODO 
 	- pass
 - 11/09 -- TODO 
@@ -130,9 +130,9 @@ Relationships
 
 
 ##What does this solve?
-Find the best coach/development staff for certain types of players (traditional 1-5 positions; roles) -- http://www.wired.com/2013/03/basketballs-hidden-positions/
+1. Find the best coach/development staff for certain types of players (traditional 1-5 positions; roles) -- http://www.wired.com/2013/03/basketballs-hidden-positions/
 
-Find value of relationships amongst players, coaches, teams, institutions.
+2. Find value of relationships amongst players, coaches, teams, institutions.
 
 http://maxdemarzi.com/2012/05/31/key-players/#more-998
 http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580&h=341
@@ -154,20 +154,24 @@ http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580
 ##Presenting/hosting Project
 http://www.graphenedb.com/pricing.html
 
+##Analysis Tools
+- Research NetworkX (python) vs igraph (c) vs graph-tools (c++) vs snap.py (c++)
+
 ##Outstanding Questions/Obstacles
 1. How to model time/duration in graph db (such as isolating the time when someone starts and ends playing for a team)
 	- Seperate into time frames (year) and connect those frames with edges
-2. How to determine weights of 	edges
-	- Time together (games/days), maybe time-based decay
+2. How to determine edge weights of
+	- Time together (games/days/seasons), maybe add time-based decay
 3. How to determine weights of player nodes
-	- Possibly RAPM (http://stats-for-the-nba.appspot.com/)
+	- RAPM (http://stats-for-the-nba.appspot.com/)
 	- Year-end awards (NBA-All Team Honors, DPOY, MVP, ROY, SOY, MIP)
 	- http://www.basketball-reference.com/friv/
 	- http://basketball.realgm.com/nba/awards/by_type/All-NBA-First-Team/12
-4. How to determine weights/size of coach nodes
+4. How to determine weights of coach nodes
 	- Team wins, championships
 5. Do not use institutions, teams as intermediate nodes
 	- Connect players, coaches, teams, institutions directly
 6. How to represent multiple, disjunct relationships amongst nodes
 	- ????
-7. Relationships don't go away, should weights be aggregated?
+7. Relationships/impact don't go away, should edge weights be aggregated frame-over-frame?
+8. Get exact player/coach intersections rather than the rough estimation/calculation

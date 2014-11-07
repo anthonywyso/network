@@ -89,4 +89,69 @@ WHERE p.player_id = 'beckemo01' AND p.season = 1947
 "varnaja01","2013","0.9953095684803002"
 "mcguido01","2013","0.99906191369606"
 
-####Building with NetworkX
+####Attributing Player RAPM to Player id
+10492 total records
+
+Confirm all rapm records associated with at least 1 player id
+WITH z AS (
+SELECT COALESCE(p.id, 0) AS id, pr.name, pr.season
+FROM players_rapm AS pr
+LEFT JOIN players AS p
+ON pr.name = p.name
+)
+SELECT DISTINCT(name) 
+FROM z
+WHERE id = 0
+
+"Sergey Bazarevich" -- Sergei Bazarevich
+"Amare Stoudemire" -- Amar'e Stoudemire
+"Jeff Pendergraph" -- Jeff Ayres
+"Ishmael Smith" -- Ish Smith // Sometimes Ish Sometimes Ishmael
+"Dennis Schroeder" -- Dennis Schröder
+Larry Krystkowiak, 1991 -- Playoffs only
+Dwayne Jones, 2013 -- Playoffs only
+Jeff Taylor, 2013/14 -- Jeffery Taylor
+
+id, name, pos
+bazarse01, Sergey Bazarevich, G
+pendeje02, Jeff Pendergraph, F
+schrode01, Dennis Schroeder, G
+smithis01, Ishmael Smith, G
+stoudam01, Amare Stoudemire, F-C
+
+SELECT COALESCE(p.player_id, 0) AS id, pr.*, p.*
+FROM players_rapm AS pr
+LEFT JOIN players_seasonlog_totals AS p
+ON pr.name = p.player AND pr.season = p.season AND p.record_type = 'full'
+WHERE id = 0
+ORDER BY id
+
+UPDATE players_rapm
+SET name = "Jeffery Taylor"
+WHERE name = "Jeff Taylor"
+
+Must account for duplicate names, pair to unique player_id.
+CREATE VIEW rapm_duplicates AS
+WITH z AS (
+SELECT pr.*, p.*, COUNT(*) AS cnt
+FROM players_rapm AS pr
+JOIN players_seasonlog_totals AS p
+ON pr.name = p.player AND pr.season = p.season AND p.record_type = 'full'
+GROUP BY pr.name, pr.season
+)
+SELECT *
+FROM z
+WHERE cnt > 1
+
+Charles Smith -- 1991, 1996
+Chris Johnson -- 2013
+Marcus Williams -- 2008, 2009
+Michael Smith -- 1995
+Tony Mitchell -- 2014
+
+SELECT pr.name, pr.season, p.player_id, *
+FROM players_rapm AS pr
+JOIN players_seasonlog_totals AS p
+ON pr.name = p.player AND pr.season = p.season AND p.record_type = 'full'
+
+Had to manually reconcile these ambiguous names based on minutes played & poss.
