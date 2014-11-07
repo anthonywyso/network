@@ -7,22 +7,29 @@
 - 11/04 -- TODO get all basic data to build network
 	- Scrape hs data for players @done
 	- Scrape college data for players @done
-	- Scrape data for coaches @done
+	- Scrape data for nba coaches @done
 	- Research time series representation for graph networks @done
 - 11/05 -- TODO gather team tenure data for players/coaches; clean data
  	- Clean hs/college data @done
-	- Scrape coach seasonlog data @done
-	- Clean coach seasonlog data @done
-	- Clean coach awards data @done
+	- Scrape nba coach seasonlog data @done
+	- Clean nba coach seasonlog data @done
+	- Clean nba coach awards data @done
 	- Scrape RAPM data @done
 	- Clean RAPM data @done
-	- Get total number games per season @done
-	- Calculate edge weights for player to team @done
-	- Calculate edge weights for coach to team
+	- Get total number games per nba season @done
+	- Build edges nba coaches to team (Aggregate data on tenure; weigh on seasons) @done
 	- Scrape player awards data @postponed
 - 11/06 -- TODO aggregate data; process into Neo4j/NetworkX/GraphLab/Gephi
-	- Aggregate data on tenure (weigh edges on days)
-- 11/07 -- TODO Have a working database in Neo4j
+	- Build edges nba coaches to team (Aggregate data on tenure; weigh on seasons) @done
+	- Build edges players to nba coaches @done
+	- Build edges players to college (tenure) @postponed
+	- Build edges players to hs (tenure) @postponed
+	- Scrape college coaches (http://www.sports-reference.com/cbb/coaches/) @postponed
+	- Build edges players to college coaches @postponed
+	- Weigh player nodes -- RAPM @done
+	- Weigh nba coach nodes -- wins @done
+	- Build network amongst players and pro coaches
+- 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
 	- pass
 - 11/08 -- TODO 
 	- pass

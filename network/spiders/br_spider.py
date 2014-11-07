@@ -4,14 +4,13 @@ from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
 
-from network.items import PlayerItem, PlayerHSItem, PlayerRAPMItem, CoachItem, CoachSeasonLogItem
+from network.items import PlayerItem, PlayerHSItem, PlayerRAPMItem
+from network.items import CoachItem, CoachSeasonLogItem
 from network.items import ValueItemLoader
 
 from itertools import izip
-import re
 
 
-# TODO go into player/coach profiles to identify pro team status
 class PlayerSpider(CrawlSpider):
     '''
     USAGE: scrapy crawl players --set FEED_URI=data/players.csv --set FEED_FORMAT=csv
@@ -91,9 +90,10 @@ class PlayerRAPMSpider(CrawlSpider):
                 loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
             yield loader.load_item()
 
+
 class PlayerRAPMNewSpider(Spider):
     '''
-    Does not account for 2014 RAPM due to different table format from source
+    Accounts for 2014 RAPM due to different table format from source
     USAGE: scrapy crawl players_rapm_new
     '''
     name = "players_rapm_new"
@@ -138,12 +138,12 @@ class CoachSeasonLogSpider(CrawlSpider):
     rules = (
         Rule(
             LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::a[contains(@href, 'coach')]"),
-            callback='parse_history',
+            callback='parse_crawl',
             follow=True
             ),
     )
 
-    def parse_history(self, response):
+    def parse_crawl(self, response):
         seasons = response.xpath("//table[@id='stats']/descendant::tbody/tr")
         for season in seasons:
             loader = ValueItemLoader(item=CoachSeasonLogItem(), selector=season)
@@ -151,3 +151,23 @@ class CoachSeasonLogSpider(CrawlSpider):
             for i, value in izip([1, 2, 3, 4, 5, 6, 7, 10], ['season', 'age', 'league', 'team', 'gp', 'w', 'l', 'standing']):
                 loader.add_xpath(value, 'td[%s]/descendant::text()' % str(i))
             yield loader.load_item()
+
+
+# TODO implement this
+class CoachCollegeSpider(CrawlSpider):
+    '''
+    USAGE: scrapy crawl coaches_college
+    '''
+    name = "coaches_college"
+    allowed_domains = ["sports-reference.com"]
+    start_urls = ["http://www.sports-reference.com/cbb/coaches/"]
+    rules = (
+        Rule(
+            LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
+            callback='parse_crawl',
+            follow=True
+            ),
+    )
+
+    def parse_crawl(self, response):
+        pass
