@@ -29,7 +29,8 @@
 	- Weigh nba coach nodes -- wins @postponed
 - 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
 	- Weigh player nodes -- RAPM -- Needs additional cleaning @done
-	- Build single season network amongst players and pro coaches
+	- Build single season network amongst players and pro coaches @done
+	- Calculate analytics on single season network
 	- Put single season players and pro coaches into Neo4j
 - 11/08 -- TODO 
 	- pass
