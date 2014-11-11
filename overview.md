@@ -30,14 +30,15 @@
 - 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
 	- Weigh player nodes -- RAPM -- Needs additional cleaning @done
 	- Build single season network amongst players and pro coaches @done
-	- Calculate analytics on single season network
-	- Put single season players and pro coaches into Neo4j
-- 11/08 -- TODO 
-	- pass
-- 11/09 -- TODO 
-	- pass
-- 11/10 -- TODO 
-	- pass
+	- Calculate analytics on single season network @done somewhat
+	- Put single season players and pro coaches into Neo4j @done
+- 11/10 -- TODO Research/better understand graph analytics; get college nodes
+	- Rescrape for college id -- needed for Neo4j College node property
+	- Stanford's Social & Information Network Analysis course -- Day 1 @done
+	- Stanford's Social & Information Network Analysis course -- Day 2 @done
+	- Consider reorganizing nodes -- use only people and connect them with directed nodes "played_with", "coached", "assistant_coached"
+	- Rethink questions -- analyze network evolution; network influence on behavior change
+	- Exploratory analysis on coach's impact on players' RAPM @done
 - 11/11 -- TODO 
 	- pass
 - 11/12 -- TODO 
@@ -143,6 +144,8 @@ http://maxdemarzidotcom.files.wordpress.com/2012/05/key_players_chart1.jpg?w=580
 - Influence: Who should be influenced in order to change social opinion?
 - Learn: Who should be questioned in order to know what is going on?
 - Redirect: Who should be moved to alter social flows?
+
+http://www.infoq.com/articles/data-modeling-graph-databases
 
 ##Prior Work
 - http://edschembor.github.io/blog/index.html

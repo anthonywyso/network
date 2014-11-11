@@ -157,6 +157,59 @@ ON pr.name = p.player AND pr.season = p.season AND p.record_type = 'full'
 Had to manually reconcile these ambiguous names based on minutes played & poss.
 
 ####NetworkX Visualization
-https://networkx.github.io/documentation/latest/examples/drawing/weighted_graph.html
+- https://networkx.github.io/documentation/latest/examples/drawing/weighted_graph.html
+- http://stackoverflow.com/questions/21978487/improving-python-networkx-graph-layout
 
 ####NetworkX Analysis Tools
+- http://en.wikipedia.org/wiki/Graph_(abstract_data_type)
+- http://en.wikipedia.org/wiki/Modularity_%28networks%29
+- https://networkx.github.io/documentation/latest/examples/advanced/index.html
+- http://networkx.github.io/documentation/networkx-1.9.1/reference/linalg.html
+
+####Network Analysis Theory
+- http://www.cs.cornell.edu/home/kleinber/networks-book/
+
+####Coach Impact on RAPM Year over year
+WITH coached_seasons AS
+(
+SELECT pct.player_id, pct.season
+FROM player_coach_tenures AS pct
+JOIN coaches AS c
+ON pct.coach_id = c.id AND c.name = 'Phil Jackson'
+ORDER BY pct.player_id, season
+),
+coached_performance AS
+(
+SELECT *
+FROM coached_seasons AS cs
+JOIN players_rapm_id AS pri
+ON cs.player_id = pri.id AND cs.season = pri.season
+)
+SELECT cp1.player_id, cp1.season, cp2.season, cp1.rapm_both AS previous, cp2.rapm_both AS current, cp2.rapm_both - cp1.rapm_both AS rapm_delta
+FROM coached_performance AS cp1
+JOIN coached_performance AS cp2
+ON cp1.player_id = cp2.player_id AND cp1.season = cp2.season - 1
+
+WITH coached_players AS(
+SELECT DISTINCT(pct.player_id) AS player_id
+FROM player_coach_tenures AS pct
+JOIN coaches AS c
+ON pct.coach_id = c.id AND c.name = 'Phil Jackson'
+),
+performances AS (
+SELECT *
+FROM players_rapm_id AS pri
+JOIN coached_players AS cp
+ON pri.id = cp.player_id
+ORDER BY pri.id, pri.season
+),
+performance_deltas AS (
+SELECT p1.id, p1.season AS season_prior, p2.season AS season_current, p1.rapm_both AS rapm_prior, p2.rapm_both AS rapm_current, p2.rapm_both - p1.rapm_both AS rapm_delta
+FROM performances AS p1
+JOIN performances AS p2
+ON p1.id = p2.id AND p1.season = p2.season - 1
+)
+SELECT pd.*
+FROM performance_deltas AS pd
+JOIN player_coach_tenures AS pct
+ON pd.id = pct.player_id AND pd.season_current = pct.season AND pct.coach_id = (SELECT id FROM coaches WHERE name = 'Phil Jackson')
