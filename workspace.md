@@ -24,17 +24,16 @@ ORDER BY state, city, hs
 - Over values players who were on a team for few games but played in all of them
 - Does not account for actual timeline of games
 
-CREATE VIEW IF NOT EXISTS players_seasonlog_tenures AS
-WITH season_total AS
-(
+CREATE VIEW IF NOT EXISTS players_seasonlog_gametotals AS
 SELECT player_id, season, sum(g) AS total
 FROM players_seasonlog_totals
 WHERE team_id <> 'TOT'
 GROUP BY season, player_id
-)
+
+CREATE VIEW IF NOT EXISTS players_seasonlog_tenures AS
 SELECT p.player_id, p.team_id, p.season, 1.0* g / total AS team_tenure_pct
 FROM players_seasonlog_totals AS p
-JOIN season_total AS s
+JOIN players_seasonlog_gametotals AS s
 ON p.player_id = s.player_id AND p.season = s.season AND p.team_id <> 'TOT'
 ORDER BY p.season DESC
 
@@ -170,63 +169,15 @@ Had to manually reconcile these ambiguous names based on minutes played & poss.
 - http://www.cs.cornell.edu/home/kleinber/networks-book/
 
 ####Coach Impact on RAPM Year over year
-WITH coached_seasons AS
-(
-SELECT pct.player_id, pct.season
-FROM player_coach_tenures AS pct
-JOIN coaches AS c
-ON pct.coach_id = c.id AND c.name = 'Phil Jackson'
-ORDER BY pct.player_id, season
-),
-coached_performance AS
-(
-SELECT *
-FROM coached_seasons AS cs
-JOIN players_rapm_id AS pri
-ON cs.player_id = pri.id AND cs.season = pri.season
-)
-SELECT cp1.player_id, cp1.season, cp2.season, cp1.rapm_both AS previous, cp2.rapm_both AS current, cp2.rapm_both - cp1.rapm_both AS rapm_delta
-FROM coached_performance AS cp1
-JOIN coached_performance AS cp2
-ON cp1.player_id = cp2.player_id AND cp1.season = cp2.season - 1
-
-WITH coached_players AS(
-SELECT DISTINCT(pct.player_id) AS player_id
-FROM player_coach_tenures AS pct
-JOIN coaches AS c
-ON pct.coach_id = c.id AND c.name = 'Phil Jackson'
-),
-performances AS (
-SELECT *
-FROM players_rapm_id AS pri
-JOIN coached_players AS cp
-ON pri.id = cp.player_id
-ORDER BY pri.id, pri.season
-),
-performance_deltas AS (
-SELECT p1.id, p1.season AS season_prior, p2.season AS season_current, p1.rapm_both AS rapm_prior, p2.rapm_both AS rapm_current, p2.rapm_both - p1.rapm_both AS rapm_delta
-FROM performances AS p1
-JOIN performances AS p2
-ON p1.id = p2.id AND p1.season = p2.season - 1
-)
 SELECT pd.*
-FROM performance_deltas AS pd
-JOIN player_coach_tenures AS pct
-ON pd.id = pct.player_id AND pd.season_current = pct.season AND pct.coach_id = (SELECT id FROM coaches WHERE name = 'Phil Jackson')
-
-----
-
-WITH
-performance_deltas AS (
-SELECT p1.id, p1.season AS season_prior, p2.season AS season_current, p1.rapm_both AS rapm_prior, p2.rapm_both AS rapm_current, p2.rapm_both - p1.rapm_both AS rapm_delta
+FROM 
+(SELECT p1.id, p1.season AS season_prior, p2.season AS season_current, p1.rapm_both AS rapm_prior, p2.rapm_both AS rapm_current, p2.rapm_both - p1.rapm_both AS rapm_delta
 FROM players_rapm_id AS p1
 JOIN players_rapm_id AS p2
-ON p1.id = p2.id AND p1.season = p2.season - 1
-)
-SELECT pd.*
-FROM performance_deltas AS pd
+ON p1.id = p2.id AND p1.season = p2.season - 1) AS pd
 JOIN player_coach_tenures AS pct
 ON pd.id = pct.player_id AND pd.season_current = pct.season AND pct.coach_id = (SELECT id FROM coaches WHERE name = 'Phil Jackson')
+ORDER BY id, season_prior
 
 ####PageRank
 http://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm

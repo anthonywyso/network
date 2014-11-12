@@ -39,6 +39,7 @@
 	- Consider reorganizing nodes -- use only people and connect them with directed nodes "played_with", "coached", "assistant_coached"
 	- Rethink questions -- analyze network evolution; network influence on behavior change
 	- Exploratory analysis on coach's impact on players' RAPM over time @done
+	- Troubleshoot sqlite3 -- cannot use "WITH" @done
 - 11/11 -- TODO Apply analysis metrics to single season
 	- Research PageRank @done
 	- Incorporate player RAPM to edge weights @done
