@@ -33,14 +33,19 @@
 	- Calculate analytics on single season network @done somewhat
 	- Put single season players and pro coaches into Neo4j @done
 - 11/10 -- TODO Research/better understand graph analytics; get college nodes
-	- Rescrape for college id -- needed for Neo4j College node property
-	- Stanford's Social & Information Network Analysis course -- Day 1 @done
-	- Stanford's Social & Information Network Analysis course -- Day 2 @done
+	- Rescrape for college id -- needed for Neo4j College node property @postponed
+	- Stanford's Social & Information Network Analysis course -- Intro @done
+	- Stanford's Social & Information Network Analysis course -- Network Properties @done
 	- Consider reorganizing nodes -- use only people and connect them with directed nodes "played_with", "coached", "assistant_coached"
 	- Rethink questions -- analyze network evolution; network influence on behavior change
-	- Exploratory analysis on coach's impact on players' RAPM @done
-- 11/11 -- TODO 
-	- pass
+	- Exploratory analysis on coach's impact on players' RAPM over time @done
+- 11/11 -- TODO Apply analysis metrics to single season
+	- Research PageRank @done
+	- Incorporate player RAPM to edge weights @done
+	- Calculate mean, sum of player RAPM edge weights @done
+	- PageRank networkx for 2014 -- Weigh on Player values 
+	- Implement Time Weighted PageRank
+	- Stanford's SINA -- Cascade Behaviors & Flow @done
 - 11/12 -- TODO 
 	- pass
 - 11/13 -- TODO 
@@ -161,6 +166,19 @@ http://www.graphenedb.com/pricing.html
 ##Analysis Tools
 - Research NetworkX (python) vs igraph (c) vs graph-tools (c++) vs snap.py (c++)
 
+##Analytics/Metrics
+- PageRank -- Compute the coach impact/value based on player values
+	- http://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm
+	- http://www-rohan.sdsu.edu/~gawron/python_for_ss/course_core/book_draft/Social_Networks/Networkx.html
+	- http://healthyalgorithms.com/tag/networkx/
+	- http://stackoverflow.com/questions/9136539/how-to-weighted-edges-affect-pagerank-in-networkx
+	- http://www.cs.uic.edu/~xli3/wi05.pdf
+	- Time Weighted PageRank -- Uses decay factor for "votes" based on when connection is formed relative to "now"
+- Flow -- To find the maximum path of value
+	- Might be able to figure out how players can maximize their performance through coaches
+- Connectivity -- To find the most connected nodes
+	- 
+
 ##Outstanding Questions/Obstacles
 1. How to model time/duration in graph db (such as isolating the time when someone starts and ends playing for a team)
 	- Seperate into time frames (year) and connect those frames with edges
@@ -168,6 +186,8 @@ http://www.graphenedb.com/pricing.html
 	- Time together (games/days/seasons), maybe add time-based decay
 3. How to determine weights of player nodes
 	- RAPM (http://stats-for-the-nba.appspot.com/)
+	- xRAPM
+	- Team MoV
 	- Year-end awards (NBA-All Team Honors, DPOY, MVP, ROY, SOY, MIP)
 	- http://www.basketball-reference.com/friv/
 	- http://basketball.realgm.com/nba/awards/by_type/All-NBA-First-Team/12
@@ -178,4 +198,4 @@ http://www.graphenedb.com/pricing.html
 6. How to represent multiple, disjunct relationships amongst nodes
 	- ????
 7. Relationships/impact don't go away, should edge weights be aggregated frame-over-frame?
-8. Get exact player/coach intersections rather than the rough estimation/calculation
+8. Get exact player/coach intersections rather than the rough season estimation/calculation

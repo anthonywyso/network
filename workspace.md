@@ -213,3 +213,28 @@ SELECT pd.*
 FROM performance_deltas AS pd
 JOIN player_coach_tenures AS pct
 ON pd.id = pct.player_id AND pd.season_current = pct.season AND pct.coach_id = (SELECT id FROM coaches WHERE name = 'Phil Jackson')
+
+----
+
+WITH
+performance_deltas AS (
+SELECT p1.id, p1.season AS season_prior, p2.season AS season_current, p1.rapm_both AS rapm_prior, p2.rapm_both AS rapm_current, p2.rapm_both - p1.rapm_both AS rapm_delta
+FROM players_rapm_id AS p1
+JOIN players_rapm_id AS p2
+ON p1.id = p2.id AND p1.season = p2.season - 1
+)
+SELECT pd.*
+FROM performance_deltas AS pd
+JOIN player_coach_tenures AS pct
+ON pd.id = pct.player_id AND pd.season_current = pct.season AND pct.coach_id = (SELECT id FROM coaches WHERE name = 'Phil Jackson')
+
+####PageRank
+http://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm
+http://www-rohan.sdsu.edu/~gawron/python_for_ss/course_core/book_draft/Social_Networks/Networkx.html
+http://healthyalgorithms.com/tag/networkx/
+http://stackoverflow.com/questions/9136539/how-to-weighted-edges-affect-pagerank-in-networkx
+http://www.cs.uic.edu/~xli3/wi05.pdf
+
+####RAPM
+http://forums.realgm.com/boards/viewtopic.php?f=64&t=1314111
+http://forums.realgm.com/boards/viewtopic.php?f=64&t=1266053&sid=7391439ddd9f31e5bc26e45790798519&start=20

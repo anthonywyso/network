@@ -16,7 +16,7 @@ class NBANetwork(object):
         data = pd.read_csv(fname)
         data = data[data['season'] == self.season]
         data.pop('season')
-        self.G = nx.Graph(season=self.season)
+        self.G = nx.DiGraph(season=self.season)
         for (player, coach, weight) in data.values:
             self.G.add_edge(player, coach, weight=weight)
         # self.G = nx.read_edgelist(fname, delimiter=",", nodetype=str, edgetype=float, data=(('weight', float),))
@@ -34,16 +34,18 @@ class NBANetwork(object):
         self.coach_nodes = [node for node in self.G.nodes() if re.search('c\Z' , node)]
         self.player_nodes = [node for node in self.G.nodes() if not re.search('c\Z' , node)]
 
+    def weigh_edges(self):
+        for player, coach, val in self.G.edges(data=True):
+            self.G[player][coach]['weight_rapm'] = self.G.node[player]['rapm_both'] * val['weight']
+
     def viz_network(self):
         edge_width = [d['weight']*2 for (u, v, d) in self.G.edges(data=True)]
-        node_pos = nx.spring_layout(self.G)
+
+        node_pos = nx.spring_layout(self.G, k=.01, scale=1)
 
         f = plt.figure(figsize=(32, 20))
         ax = f.add_subplot(1, 1, 1)
         ax.set_title('NBA Player-Coach Relationships %s' % self.season)
-        # nx.draw_spring(graph, ax=ax)
-        # nx.draw_networkx_nodes(self.G, node_pos)
-        # nx.draw_networkx_edges(self.G, node_pos, width=edge_width)
         nx.draw_networkx_nodes(self.G, pos=node_pos, nodelist=self.coach_nodes, node_color='black', alpha=1.0, label="coaches")
         nx.draw_networkx_nodes(self.G, pos=node_pos, nodelist=self.player_nodes, alpha=0.1, label="players")
         nx.draw_networkx_edges(self.G, pos=node_pos, width=edge_width, edge_color=edge_width)
@@ -54,6 +56,7 @@ class NBANetwork(object):
         self.load_edges()
         self.load_nodes()
         self.label_nodes()
+        self.weigh_edges()
 
 
 def main():
