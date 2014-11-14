@@ -47,10 +47,25 @@
 	- PageRank networkx for 2014 -- Weigh on Player values 
 	- Implement Time Weighted PageRank
 	- Stanford's SINA -- Cascade Behaviors & Flow @done
-- 11/12 -- TODO 
-	- pass
-- 11/13 -- TODO 
-	- pass
+- 11/12 -- TODO Presentation; Coach Analysis with traditional statistics
+	- Compare coaches for player rapm in rookie season
+		- Query rookie seasons @done
+		- Visualize distribution of rookie season performances @done
+		- KS-test on rookie seasons with various coaches @done
+		- t-test on rookie seasons with various coaches @done
+		- Code into py file @done
+	- Compare coaches for player rapm through sophomore season
+		- Query sophomore seasons
+		- Query difference in performance between rookie/soph seasons
+- 11/13 -- TODO Presentation; Extract pagerank, clusters from network
+	- Get all players, coaches, RAPM scores from database @done
+	- Put nodes into Gephi @done
+	- Run analysis in Gephi @done
+	- Review Gephi analysis with Jon/Zach @done
+	- Export Gephi analytics
+	- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections
+	- NetworkX analysis with player-player connections
+	- Scrape player gamelogs for more granular relationship weights (find how many games together)
 - 11/14 -- TODO 
 	- pass
 
@@ -168,6 +183,7 @@ http://www.graphenedb.com/pricing.html
 - Research NetworkX (python) vs igraph (c) vs graph-tools (c++) vs snap.py (c++)
 
 ##Analytics/Metrics
+####Graph
 - PageRank -- Compute the coach impact/value based on player values
 	- http://www.cs.princeton.edu/~chazelle/courses/BIB/pagerank.htm
 	- http://www-rohan.sdsu.edu/~gawron/python_for_ss/course_core/book_draft/Social_Networks/Networkx.html
@@ -178,7 +194,23 @@ http://www.graphenedb.com/pricing.html
 - Flow -- To find the maximum path of value
 	- Might be able to figure out how players can maximize their performance through coaches
 - Connectivity -- To find the most connected nodes
-	- 
+
+######Network Degree	
+- Modularity Class (Adjust resolution to alter communities)
+- PageRank (Should identify most connected individuals)
+
+######Node Overview
+- Eigenvector Centrality
+
+######Edge Overview
+- Avg Path Length
+- Edge Betweenness
+- Link Communities
+	
+	
+####Traditional Statistics
+- KS-test
+	- http://stats.stackexchange.com/questions/57885/how-to-interpret-p-value-of-kolmogorov-smirnov-test-python
 
 ##Outstanding Questions/Obstacles
 1. How to model time/duration in graph db (such as isolating the time when someone starts and ends playing for a team)

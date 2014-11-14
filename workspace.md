@@ -189,3 +189,74 @@ http://www.cs.uic.edu/~xli3/wi05.pdf
 ####RAPM
 http://forums.realgm.com/boards/viewtopic.php?f=64&t=1314111
 http://forums.realgm.com/boards/viewtopic.php?f=64&t=1266053&sid=7391439ddd9f31e5bc26e45790798519&start=20
+
+####Rookie Performance
+SELECT pri.*, pct.coach_id, pct.player_coach_tenure_pct
+FROM players_rapm_id AS pri
+JOIN player_coach_tenures AS pct,
+(SELECT player_id, MIN(season) AS season_rookie
+FROM players_seasonlog_totals AS pst
+GROUP BY player_id
+HAVING season_rookie >= 1991) AS rp
+ON pri.id = pct.player_id AND pri.id = rp.player_id AND pri.season = pct.season AND pri.season = rp.season_rookie
+
+
+----
+
+SELECT pst.player_id, pst.season, pst.team_id
+FROM players_seasonlog_totals AS pst
+JOIN (
+SELECT player_id, MIN(season) AS season_rookie
+                FROM players_seasonlog_totals AS pst
+                GROUP BY player_id
+                HAVING season_rookie >= 1991
+) AS pst2
+ON pst.player_id = pst2.player_id AND pst.season = pst2.season_rookie AND pst.team_id <> 'TOT'
+
+
+####Player Coach Edges -- player_coach_rapm
+SELECT pct.*, pri.rapm_off, pri.rapm_def, pri.rapm_both, pri.poss
+FROM player_coach_tenures AS pct
+JOIN (SELECT DISTINCT(player_id) AS player_id, season FROM players_seasonlog_totals WHERE season > 1991) AS p, 
+players_rapm_id AS pri
+ON pct.player_id = p.player_id AND pct.season = p.season AND pct.player_id = pri.id AND pct.season = pri.season
+
+SELECT player_id AS source, coach_id AS target, "RAPM" AS label, rapm_both AS weight
+FROM player_coach_rapm
+
+SELECT pcr.player_id AS source, pcr.coach_id AS target, pcr.season AS label,(pcr.rapm_both - r.min) / r.range AS weight
+FROM player_coach_rapm AS pcr
+JOIN rapm_range AS r
+
+####Individual Nodes
+CREATE TABLE IF NOT EXISTS individuals (name TEXT, player_id TEXT, label TEXT) 
+
+INSERT INTO individuals 
+SELECT player AS name, player_id AS id, "p" AS label
+FROM players_seasonlog_totals
+WHERE season >= 1991
+GROUP BY id
+
+INSERT INTO individuals
+SELECT c.name, c.id, "c" AS label
+FROM player_coach_rapm AS pcr
+JOIN coaches AS c
+ON pcr.coach_id = c.id
+GROUP BY c.id
+
+SELECT id AS id, name AS name, label AS label FROM individuals
+
+
+
+####Finding the exact number of games players played together
+http://www.basketball-reference.com/players/w/westbru01/gamelog/2014/
+
+players >> letter >> playername.html >> gamelogs >> scrape
+
+####Player to player connections
+CREATE VIEW player_player_tenures AS
+SELECT pst.player_id, pst2.player_id, pst.team_id, pst.season, 
+CASE WHEN pst.team_tenure_pct > pst2.team_tenure_pct THEN pst.team_tenure_pct ELSE pst2.team_tenure_pct END AS weight
+FROM players_seasonlog_tenures AS pst
+CROSS JOIN players_seasonlog_tenures AS pst2
+WHERE pst.team_id = pst2.team_id AND pst.season = pst2.season AND pst.player_id <> pst2.player_id
