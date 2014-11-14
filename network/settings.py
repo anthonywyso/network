@@ -20,11 +20,11 @@ COOKIES_ENABLED = False
 
 DATABASE = {
     'drivername': 'sqlite',
-    'database': '../../ball/data/nbadb.sqlite'
+    'database': 'data/network.sqlite'
 }
 
 ITEM_PIPELINES = {
-    'network.pipelines.CsvExportPipeline': 300
+    'network.pipelines.SQLExportPipeline': 300
 }
 
 HTTPCACHE_ENABLED = True
