@@ -27,7 +27,7 @@ def clean_values(feature):
 
 
 def regex_xpath(search, xpath):
-    return re.findall(str(search), xpath[0])
+    return re.findall(str(search), xpath.extract()[0])
 
 
 class DynamicScrapeUtility(object):

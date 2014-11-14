@@ -19,11 +19,8 @@ class PlayerSpider(CrawlSpider):
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/players/"]
     rules = (
-        Rule(
-            LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
-            callback='parse_start_url',
-            follow=True
-            ),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
+             callback='parse_start_url', follow=True),
     )
 
     def parse_start_url(self, response):
@@ -46,11 +43,8 @@ class PlayerHSSpider(CrawlSpider):
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/friv/high_schools.cgi"]
     rules = (
-        Rule(
-            LxmlLinkExtractor(restrict_xpaths="//a[contains(@href, 'high_schools')]"),
-            callback='parse_start_url',
-            follow=True
-            ),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//a[contains(@href, 'high_schools')]"),
+             callback='parse_start_url', follow=True),
     )
 
     def parse_start_url(self, response):
@@ -74,11 +68,8 @@ class PlayerRAPMSpider(CrawlSpider):
     allowed_domains = ["appspot.com"]
     start_urls = ["http://stats-for-the-nba.appspot.com/"]
     rules = (
-        Rule(
-            LxmlLinkExtractor(restrict_xpaths="//table/descendant::a[contains(@href, 'ratings')]"),
-            callback='parse_crawl',
-            follow=True
-            ),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::a[contains(@href, 'ratings')]"),
+             callback='parse_crawl', follow=True),
     )
     def parse_crawl(self, response):
         players = response.xpath("//table/descendant::tr")
@@ -135,11 +126,8 @@ class CoachSeasonLogSpider(CrawlSpider):
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/coaches/"]
     rules = (
-        Rule(
-            LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::a[contains(@href, 'coach')]"),
-            callback='parse_crawl',
-            follow=True
-            ),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::a[contains(@href, 'coach')]"),
+             callback='parse_crawl', follow=True),
     )
 
     def parse_crawl(self, response):
@@ -152,24 +140,64 @@ class CoachSeasonLogSpider(CrawlSpider):
             yield loader.load_item()
 
 
-# TODO implement this
-class CoachSeasonLogSpider(CrawlSpider):
+# TODO remove redundancy; test
+class CoachCollegeSeasonLogSpider(CrawlSpider):
     """
     Retrieves all coaches in college universe
     """
-    name = "coaches_college_scrape"
+    name = "coaches_college_seasonlog_scrape"
     allowed_domains = ["sports-reference.com"]
     start_urls = ["http://www.sports-reference.com/cbb/coaches/"]
     rules = (
-        Rule(
-            LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
-            callback='parse_crawl',
-            follow=True
-            ),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
+             follow=True, callback="parse_coaches"),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::td/a[contains(@href, 'coaches')]"),
+             follow=True, callback="parse_crawl"),
     )
 
+    def parse_coaches(self, response):
+        """
+        Retrieves basic career-aggregated records for college coaches
+        """
+        extra_features = ["coach_id"]
+
+        careers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::tbody/tr")
+        career_headers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::thead/descendant::th/@data-stat")
+        dynamic = DynamicScrapeUtility("coaches_college_careerlog_totals")
+        dynamic.extract_table_features(career_headers)
+        dynamic.append_table_features(add_features=extra_features)
+        dynamic.create_item_class()
+        dynamic.create_table()
+
+        for row in careers:
+            loader = ValueItemLoader(item=dynamic.item(), selector=row)
+            for i, feature in enumerate(dynamic.features_scraped):
+                loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
+            loader.add_value("coach_id", regex_xpath("(?<=coaches/)\S+(?=.html)", row.xpath("//a[contains(@href, 'coaches')]")))
+            yield loader.load_item()
+
     def parse_crawl(self, response):
-        pass
+        """
+        Retrieves season-aggregated records for college coaches
+        """
+        extra_features = ["coach_id", "college_id"]
+
+        seasons = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::tbody/tr")
+        season_headers = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::thead/descendant::th/@data-stat")
+        coach_dynamic = DynamicScrapeUtility("coaches_college_seasonlog_totals")
+        coach_dynamic.extract_table_features(season_headers)
+        coach_dynamic.append_table_features(add_features=extra_features)
+        coach_dynamic.create_item_class()
+        coach_dynamic.create_table()
+
+        for row in seasons:
+            loader = ValueItemLoader(item=coach_dynamic.item(), selector=row)
+            for i, feature in enumerate(coach_dynamic.features_scraped):
+                loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
+            loader.add_value("coach_id", re.findall("(?<=coaches/)\S+(?=.html)", response.url)[0])
+            loader.add_value("college_id", regex_xpath("(?<=schools/)\D+(?=\/)", row.xpath("td/a[contains(@href, 'school')]/@href")))
+            yield loader.load_item()
+
 
 # TODO remove redundancy for basic/adv scraping
 class PlayerGameLogSpider(CrawlSpider):
@@ -180,9 +208,12 @@ class PlayerGameLogSpider(CrawlSpider):
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/players/"]
     rules = (
-        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"), follow=True),
-        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='players']/descendant::td/a[contains(@href, 'players')]"), follow=True),
-        Rule(LxmlLinkExtractor(restrict_xpaths="//*[.='Game Logs']/parent::*/descendant::a[contains(@href, 'gamelog')]"), follow=True, callback='parse_crawl'),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
+             follow=True),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='players']/descendant::td/a[contains(@href, 'players')]"),
+             follow=True),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//*[.='Game Logs']/parent::*/descendant::a[contains(@href, 'gamelog')]"),
+             follow=True, callback="parse_crawl"),
     )
 
     def parse_crawl(self, response):
@@ -208,7 +239,7 @@ class PlayerGameLogSpider(CrawlSpider):
             loader = ValueItemLoader(item=basic_dynamic.item(), selector=row)
             for i, feature in enumerate(basic_dynamic.features_scraped):
                 loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
-            if regex_xpath("playoffs", row.xpath("@id").extract()):
+            if regex_xpath("playoffs", row.xpath("@id")):
                 loader.add_value("game_type", "post")
             else:
                 loader.add_value("game_type", "regular")
@@ -220,7 +251,7 @@ class PlayerGameLogSpider(CrawlSpider):
             loader_adv = ValueItemLoader(item=adv_dynamic.item(), selector=row_adv)
             for i_adv, feature_adv in enumerate(adv_dynamic.features_scraped):
                 loader_adv.add_xpath(feature_adv, 'td[%s]/descendant::text()' % str(i_adv+1))
-            if regex_xpath("playoffs", row_adv.xpath("@id").extract()):
+            if regex_xpath("playoffs", row_adv.xpath("@id")):
                 loader_adv.add_value("game_type", "post")
             else:
                 loader_adv.add_value("game_type", "regular")
