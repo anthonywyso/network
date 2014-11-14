@@ -26,14 +26,13 @@
 	- Build edges players to hs (tenure) @postponed
 	- Scrape college coaches (http://www.sports-reference.com/cbb/coaches/) @postponed
 	- Build edges players to college coaches @postponed
-	- Weigh nba coach nodes -- wins @postponed
 - 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
 	- Weigh player nodes -- RAPM -- Needs additional cleaning @done
 	- Build single season network amongst players and pro coaches @done
 	- Calculate analytics on single season network @done somewhat
 	- Put single season players and pro coaches into Neo4j @done
 - 11/10 -- TODO Research/better understand graph analytics; get college nodes
-	- Rescrape for college id -- needed for Neo4j College node property @postponed
+	- Rescrape for college id -- needed for Neo4j College node property @postponed (DONE 11/13)
 	- Stanford's Social & Information Network Analysis course -- Intro @done
 	- Stanford's Social & Information Network Analysis course -- Network Properties @done
 	- Consider reorganizing nodes -- use only people and connect them with directed nodes "played_with", "coached", "assistant_coached"
@@ -44,17 +43,17 @@
 	- Research PageRank @done
 	- Incorporate player RAPM to edge weights @done
 	- Calculate mean, sum of player RAPM edge weights @done
-	- PageRank networkx for 2014 -- Weigh on Player values 
-	- Implement Time Weighted PageRank
+	- PageRank networkx for 2014 -- Weigh on Player values @done
+	- Implement Time Weighted PageRank @postponed
 	- Stanford's SINA -- Cascade Behaviors & Flow @done
 - 11/12 -- TODO Presentation; Coach Analysis with traditional statistics
-	- Compare coaches for player rapm in rookie season
+	- Compare coaches for player rapm in rookie season @done
 		- Query rookie seasons @done
 		- Visualize distribution of rookie season performances @done
 		- KS-test on rookie seasons with various coaches @done
 		- t-test on rookie seasons with various coaches @done
 		- Code into py file @done
-	- Compare coaches for player rapm through sophomore season
+	- Compare coaches for player rapm through sophomore season @postponed
 		- Query sophomore seasons
 		- Query difference in performance between rookie/soph seasons
 - 11/13 -- TODO Presentation; Extract pagerank, clusters from network
@@ -62,12 +61,11 @@
 	- Put nodes into Gephi @done
 	- Run analysis in Gephi @done
 	- Review Gephi analysis with Jon/Zach @done
-	- Export Gephi analytics
-	- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections
-	- NetworkX analysis with player-player connections
-	- Scrape player gamelogs for more granular relationship weights (find how many games together)
+	- Scrape player gamelogs for more granular relationship weights (find how many games together) @kicked off
 - 11/14 -- TODO 
-	- pass
+	- Export Gephi analytics
+	- NetworkX analysis with player-player connections
+	- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections 
 
 ##Data Pipeline
 Scrapy/Python --> csv --> clean --> Neo4j --> Maybe Gephi/Graphlab

@@ -5,8 +5,10 @@ from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
 from network.items import PlayerItem, PlayerHSItem, PlayerRAPMItem
 from network.items import CoachItem, CoachSeasonLogItem
 from network.items import ValueItemLoader
+from network.pipeline_utilities import DynamicScrapeUtility, regex_xpath
 
 from itertools import izip
+import re
 
 
 class PlayerSpider(CrawlSpider):
@@ -168,3 +170,60 @@ class CoachSeasonLogSpider(CrawlSpider):
 
     def parse_crawl(self, response):
         pass
+
+# TODO remove redundancy for basic/adv scraping
+class PlayerGameLogSpider(CrawlSpider):
+    """
+    Retrieves all game-aggregated player records
+    """
+    name = "players_gamelog_scrape"
+    allowed_domains = ["basketball-reference.com"]
+    start_urls = ["http://www.basketball-reference.com/players/"]
+    rules = (
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"), follow=True),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='players']/descendant::td/a[contains(@href, 'players')]"), follow=True),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//*[.='Game Logs']/parent::*/descendant::a[contains(@href, 'gamelog')]"), follow=True, callback='parse_crawl'),
+    )
+
+    def parse_crawl(self, response):
+        extra_features = ["game_type", "player_id", "season"]
+
+        basics = response.xpath("//div[contains(@id, 'div_pgl_basic')]/descendant::tr[@id]")
+        basic_header = response.xpath("//div[contains(@id, 'basic_div')]/descendant::thead/descendant::th/@data-stat").extract()
+        basic_dynamic = DynamicScrapeUtility("players_gamelog_basic")
+        basic_dynamic.extract_table_features(basic_header)
+        basic_dynamic.append_table_features(add_features=extra_features)
+        basic_dynamic.create_item_class()
+        basic_dynamic.create_table()
+
+        advs = response.xpath("//div[contains(@id, 'div_pgl_advanced')]/descendant::tr[@id]")
+        adv_header = response.xpath("//div[contains(@id, 'advanced_div')]/descendant::thead/descendant::th/@data-stat").extract()
+        adv_dynamic = DynamicScrapeUtility("players_gamelog_adv")
+        adv_dynamic.extract_table_features(adv_header)
+        adv_dynamic.append_table_features(add_features=extra_features)
+        adv_dynamic.create_item_class()
+        adv_dynamic.create_table()
+
+        for row in basics:
+            loader = ValueItemLoader(item=basic_dynamic.item(), selector=row)
+            for i, feature in enumerate(basic_dynamic.features_scraped):
+                loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
+            if regex_xpath("playoffs", row.xpath("@id").extract()):
+                loader.add_value("game_type", "post")
+            else:
+                loader.add_value("game_type", "regular")
+            loader.add_value("player_id", re.findall("\w+\d", response.url)[0])
+            loader.add_value("season", re.findall("\d{4}", response.url)[0])
+            yield loader.load_item()
+
+        for row_adv in advs:
+            loader_adv = ValueItemLoader(item=adv_dynamic.item(), selector=row_adv)
+            for i_adv, feature_adv in enumerate(adv_dynamic.features_scraped):
+                loader_adv.add_xpath(feature_adv, 'td[%s]/descendant::text()' % str(i_adv+1))
+            if regex_xpath("playoffs", row_adv.xpath("@id").extract()):
+                loader_adv.add_value("game_type", "post")
+            else:
+                loader_adv.add_value("game_type", "regular")
+            loader_adv.add_value("player_id", re.findall("\w+\d", response.url)[0])
+            loader_adv.add_value("season", re.findall("\d{4}", response.url)[0])
+            yield loader_adv.load_item()

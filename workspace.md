@@ -246,10 +246,12 @@ GROUP BY c.id
 
 SELECT id AS id, name AS name, label AS label FROM individuals
 
-
+####Scrape for college coaches
+cbb/coaches >> letter >> coach-name-1.html >> scrape
 
 ####Finding the exact number of games players played together
 http://www.basketball-reference.com/players/w/westbru01/gamelog/2014/
+http://www.basketball-reference.com/players/a/abdelal01/gamelog/1991/
 
 players >> letter >> playername.html >> gamelogs >> scrape
 

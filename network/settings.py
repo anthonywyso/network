@@ -27,8 +27,8 @@ ITEM_PIPELINES = {
     'network.pipelines.SQLExportPipeline': 300
 }
 
-HTTPCACHE_ENABLED = True
-HTTPCACHE_EXPIRATION_SECS = 0  # Set to 0 to never expire
+# HTTPCACHE_ENABLED = True
+# HTTPCACHE_EXPIRATION_SECS = 0  # Set to 0 to never expire
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'network (+http://www.yourdomain.com)'

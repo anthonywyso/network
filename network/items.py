@@ -32,6 +32,11 @@ class PlayerRAPMItem(Item):
     poss = Field()
 
 
+class PlayerGameLogItem(Item):
+    name = Field()
+    id = Field()
+
+
 class CoachItem(Item):
     name = Field()
     id = Field()

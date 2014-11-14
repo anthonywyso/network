@@ -39,6 +39,6 @@ class SQLExportPipeline(object):
         df = pd.DataFrame(data=data, index=np.arange(1))
 
         with sql.connect(self.db) as connection:
-            df.to_sql(spider.name, connection, if_exists='append')
-
+            # df.to_sql(spider.name, connection, if_exists='append')
+            df.to_sql(item.__class__.__name__, connection, if_exists='append')
         return item
