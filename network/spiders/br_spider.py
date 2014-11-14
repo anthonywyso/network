@@ -1,8 +1,6 @@
 from scrapy.spider import Spider
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.lxmlhtml import LxmlLinkExtractor
-from scrapy.selector import Selector
-from scrapy.contrib.loader import ItemLoader
 
 from network.items import PlayerItem, PlayerHSItem, PlayerRAPMItem
 from network.items import CoachItem, CoachSeasonLogItem
@@ -12,10 +10,10 @@ from itertools import izip
 
 
 class PlayerSpider(CrawlSpider):
-    '''
-    USAGE: scrapy crawl players --set FEED_URI=data/players.csv --set FEED_FORMAT=csv
-    '''
-    name = "players"
+    """
+    Retrieves all players in NBA universe
+    """
+    name = "players_scrape"
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/players/"]
     rules = (
@@ -27,22 +25,22 @@ class PlayerSpider(CrawlSpider):
     )
 
     def parse_start_url(self, response):
-        sel = Selector(response)
-        players = sel.xpath("//tbody/tr")
+        players = response.xpath("//tbody/tr")
         for player in players:
-            loader = ItemLoader(item=PlayerItem(), selector=player)
+            loader = ValueItemLoader(item=PlayerItem(), selector=player)
             loader.add_xpath('name', 'td/descendant::a[contains(@href, "players")]/text()')
             loader.add_xpath('id', 'td/descendant::a[contains(@href, "players")]/@href', re="\w+\d")
             loader.add_xpath('college', 'td/a[contains(@href, "college")]/text()')
+            loader.add_xpath('college_id', 'td/descendant::a[contains(@href, "college")]/@href', re="(?<==)\w+")
             loader.add_xpath('pos', 'td[@align="center"]/text()')
             yield loader.load_item()
 
 
 class PlayerHSSpider(CrawlSpider):
-    '''
-    USAGE: scrapy crawl players_hs --set FEED_URI=data/players_hs.csv --set FEED_FORMAT=csv
-    '''
-    name = "players_hs"
+    """
+    Retrieves all available high schools of NBA universe
+    """
+    name = "players_hs_scrape"
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/friv/high_schools.cgi"]
     rules = (
@@ -54,8 +52,7 @@ class PlayerHSSpider(CrawlSpider):
     )
 
     def parse_start_url(self, response):
-        sel = Selector(response)
-        players = sel.xpath("//tbody/tr")
+        players = response.xpath("//tbody/tr")
         for player in players:
             loader = ValueItemLoader(item=PlayerHSItem(), selector=player)
             loader.add_xpath('name', 'td/descendant::a[contains(@href, "players")]/text()')
@@ -67,11 +64,11 @@ class PlayerHSSpider(CrawlSpider):
 
 
 class PlayerRAPMSpider(CrawlSpider):
-    '''
+    """
+    Retrieves all available player RAPM records
     Does not account for 2014 RAPM due to different table format from source
-    USAGE: scrapy crawl players_rapm
-    '''
-    name = "players_rapm"
+    """
+    name = "players_rapm_scrape"
     allowed_domains = ["appspot.com"]
     start_urls = ["http://stats-for-the-nba.appspot.com/"]
     rules = (
@@ -92,11 +89,11 @@ class PlayerRAPMSpider(CrawlSpider):
 
 
 class PlayerRAPMNewSpider(Spider):
-    '''
+    """
+    Retrieves player RAPM for 2014
     Accounts for 2014 RAPM due to different table format from source
-    USAGE: scrapy crawl players_rapm_new
-    '''
-    name = "players_rapm_new"
+    """
+    name = "players_rapm_new_scrape"
     allowed_domains = ["appspot.com"]
     start_urls = ["http://stats-for-the-nba.appspot.com/ratings/2014.html"]
 
@@ -111,17 +108,17 @@ class PlayerRAPMNewSpider(Spider):
 
 
 class CoachSpider(Spider):
-    '''
-    USAGE: scrapy crawl coaches --set FEED_URI=data/coaches.csv --set FEED_FORMAT=csv
-    '''
-    name = "coaches"
+    """
+    Retrieves all coaches in NBA universe
+    """
+    name = "coaches_scrape"
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/coaches/"]
 
     def parse(self, response):
         coaches = response.xpath("//tbody/tr")
         for coach in coaches:
-            loader = ItemLoader(item=CoachItem(), selector=coach)
+            loader = ValueItemLoader(item=CoachItem(), selector=coach)
             loader.add_xpath('name', 'td/descendant::a[contains(@href, "coach")]/text()')
             loader.add_xpath('id', 'td/descendant::a[contains(@href, "coach")]/@href', re="\w+\d")
             loader.add_xpath('college', 'td/a[contains(@href, "college")]/text()')
@@ -129,10 +126,10 @@ class CoachSpider(Spider):
 
 
 class CoachSeasonLogSpider(CrawlSpider):
-    '''
-    USAGE: scrapy crawl coaches_seasonlog
-    '''
-    name = "coaches_seasonlog"
+    """
+    Retrieves season-aggregated coach records
+    """
+    name = "coaches_seasonlog_scrape"
     allowed_domains = ["basketball-reference.com"]
     start_urls = ["http://www.basketball-reference.com/coaches/"]
     rules = (
@@ -154,11 +151,11 @@ class CoachSeasonLogSpider(CrawlSpider):
 
 
 # TODO implement this
-class CoachCollegeSpider(CrawlSpider):
-    '''
-    USAGE: scrapy crawl coaches_college
-    '''
-    name = "coaches_college"
+class CoachSeasonLogSpider(CrawlSpider):
+    """
+    Retrieves all coaches in college universe
+    """
+    name = "coaches_college_scrape"
     allowed_domains = ["sports-reference.com"]
     start_urls = ["http://www.sports-reference.com/cbb/coaches/"]
     rules = (

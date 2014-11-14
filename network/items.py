@@ -11,6 +11,7 @@ class PlayerItem(Item):
     name = Field()
     id = Field()
     college = Field()
+    college_id = Field()
     pos = Field()
 
 
