@@ -200,7 +200,6 @@ GROUP BY player_id
 HAVING season_rookie >= 1991) AS rp
 ON pri.id = pct.player_id AND pri.id = rp.player_id AND pri.season = pct.season AND pri.season = rp.season_rookie
 
-
 ----
 
 SELECT pst.player_id, pst.season, pst.team_id
@@ -213,6 +212,17 @@ SELECT player_id, MIN(season) AS season_rookie
 ) AS pst2
 ON pst.player_id = pst2.player_id AND pst.season = pst2.season_rookie AND pst.team_id <> 'TOT'
 
+----
+
+SELECT *
+FROM players_rookie_performances AS prp
+JOIN players_soph_performances AS psp
+ON prp.id = psp.id AND prp.season = psp.season - 1
+
+Rookie to soph seasons 1944
+Rookie to soph seasons under the same coach 736
+Rooke to junior seasons 1593
+Rooke to junior seasons under the same coach 306
 
 ####Player Coach Edges -- player_coach_rapm
 SELECT pct.*, pri.rapm_off, pri.rapm_def, pri.rapm_both, pri.poss
@@ -262,3 +272,14 @@ CASE WHEN pst.team_tenure_pct > pst2.team_tenure_pct THEN pst.team_tenure_pct EL
 FROM players_seasonlog_tenures AS pst
 CROSS JOIN players_seasonlog_tenures AS pst2
 WHERE pst.team_id = pst2.team_id AND pst.season = pst2.season AND pst.player_id <> pst2.player_id
+
+SELECT *
+FROM players_rookie_performances AS prp
+JOIN players_soph_performances AS psp
+ON prp.id = psp.id AND prp.season = psp.season - 1
+
+####Multiple testing
+Bonferoni
+
+- http://en.wikipedia.org/wiki/Familywise_error_rate#Controlling_procedures
+- http://allendowney.blogspot.com/2011/10/repeated-tests-how-bad-can-it-be.html

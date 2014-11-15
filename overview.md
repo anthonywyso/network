@@ -42,7 +42,7 @@
 - 11/11 -- TODO Apply analysis metrics to single season
 	- Research PageRank @done
 	- Incorporate player RAPM to edge weights @done
-	- Calculate mean, sum of player RAPM edge weights @done
+	- Calculate mean, sum of players RAPM edge weights @done
 	- PageRank networkx for 2014 -- Weigh on Player values @done
 	- Implement Time Weighted PageRank @postponed
 	- Stanford's SINA -- Cascade Behaviors & Flow @done
@@ -62,11 +62,22 @@
 	- Run analysis in Gephi @done
 	- Review Gephi analysis with Jon/Zach @done
 	- Scrape player gamelogs for more granular relationship weights (find how many games together) @kicked off
-- 11/14 -- TODO 
-	- Export Gephi analytics
-	- NetworkX analysis with player-player connections
-	- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections 
-
+- 11/14 -- TODO Tighten up analyses
+	- Finish sophomore seasons analysis @done
+		- Measure RAPM delta on players who did not share the same coach yoy
+	- 3rd season analysis @done
+	- Investigate multiple testing @done
+	- Build relationships between players with gamelog data @postponed
+	- Scrape player seasonlogs for college (will assist in sourcing college coaches) @postponed
+	- Export Gephi interactive visual & analytics @done
+		- Export to gexf; get gephi_js folder for deploying on server; drop gexf into gephi_js; update config.js; deploy!
+	- NetworkX analysis with player-player connections @done
+		- PageRank; Flow; Eigen Centrality
+	- Export gamelog relationships into Neo4j for easier querying @postponed
+		- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections 
+- 11/15 -- TODO
+	- Scrape college coach performances
+	
 ##Data Pipeline
 Scrapy/Python --> csv --> clean --> Neo4j --> Maybe Gephi/Graphlab
 

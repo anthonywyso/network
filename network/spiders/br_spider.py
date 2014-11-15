@@ -140,12 +140,12 @@ class CoachSeasonLogSpider(CrawlSpider):
             yield loader.load_item()
 
 
-# TODO remove redundancy; test
-class CoachCollegeSeasonLogSpider(CrawlSpider):
+# TODO remove redundancy
+class CoachCollegeSpider(CrawlSpider):
     """
     Retrieves all coaches in college universe
     """
-    name = "coaches_college_seasonlog_scrape"
+    name = "coaches_college_scrape"
     allowed_domains = ["sports-reference.com"]
     start_urls = ["http://www.sports-reference.com/cbb/coaches/"]
     rules = (
@@ -161,8 +161,8 @@ class CoachCollegeSeasonLogSpider(CrawlSpider):
         """
         extra_features = ["coach_id"]
 
-        careers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::tbody/tr")
-        career_headers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::thead/descendant::th/@data-stat")
+        careers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::tbody/tr[@class='']")
+        career_headers = response.xpath("//div[@id='div_coaches']/table[@id='coaches']/descendant::thead/descendant::th/@data-stat").extract()
         dynamic = DynamicScrapeUtility("coaches_college_careerlog_totals")
         dynamic.extract_table_features(career_headers)
         dynamic.append_table_features(add_features=extra_features)
@@ -173,7 +173,7 @@ class CoachCollegeSeasonLogSpider(CrawlSpider):
             loader = ValueItemLoader(item=dynamic.item(), selector=row)
             for i, feature in enumerate(dynamic.features_scraped):
                 loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
-            loader.add_value("coach_id", regex_xpath("(?<=coaches/)\S+(?=.html)", row.xpath("//a[contains(@href, 'coaches')]")))
+            loader.add_value("coach_id", regex_xpath("(?<=coaches/)\S+(?=.html)", row.xpath("td/a[contains(@href, 'coaches')]"))[0])
             yield loader.load_item()
 
     def parse_crawl(self, response):
@@ -182,8 +182,8 @@ class CoachCollegeSeasonLogSpider(CrawlSpider):
         """
         extra_features = ["coach_id", "college_id"]
 
-        seasons = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::tbody/tr")
-        season_headers = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::thead/descendant::th/@data-stat")
+        seasons = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::tbody/tr[@class='']")
+        season_headers = response.xpath("//div[@id='div_stats']/table[@id='stats']/descendant::thead/descendant::th/@data-stat").extract()
         coach_dynamic = DynamicScrapeUtility("coaches_college_seasonlog_totals")
         coach_dynamic.extract_table_features(season_headers)
         coach_dynamic.append_table_features(add_features=extra_features)
@@ -195,7 +195,7 @@ class CoachCollegeSeasonLogSpider(CrawlSpider):
             for i, feature in enumerate(coach_dynamic.features_scraped):
                 loader.add_xpath(feature, 'td[%s]/descendant::text()' % str(i+1))
             loader.add_value("coach_id", re.findall("(?<=coaches/)\S+(?=.html)", response.url)[0])
-            loader.add_value("college_id", regex_xpath("(?<=schools/)\D+(?=\/)", row.xpath("td/a[contains(@href, 'school')]/@href")))
+            loader.add_value("college_id", regex_xpath("(?<=schools/)\D+(?=\/)", row.xpath("td/a[contains(@href, 'school')]/@href"))[0])
             yield loader.load_item()
 
 
