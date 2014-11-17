@@ -24,7 +24,7 @@
 	- Build edges players to nba coaches @done
 	- Build edges players to college (tenure) @postponed
 	- Build edges players to hs (tenure) @postponed
-	- Scrape college coaches (http://www.sports-reference.com/cbb/coaches/) @postponed
+	- Scrape college coaches (http://www.sports-reference.com/cbb/coaches/) @postponed (DONE 11/16)
 	- Build edges players to college coaches @postponed
 - 11/07 -- TODO Have a working database in Neo4j; compute analytics on network
 	- Weigh player nodes -- RAPM -- Needs additional cleaning @done
@@ -53,33 +53,46 @@
 		- KS-test on rookie seasons with various coaches @done
 		- t-test on rookie seasons with various coaches @done
 		- Code into py file @done
-	- Compare coaches for player rapm through sophomore season @postponed
-		- Query sophomore seasons
-		- Query difference in performance between rookie/soph seasons
+	- Compare coaches for player rapm through sophomore season @postponed (DONE 11/14)
+		- Query sophomore seasons @done
+		- Query difference in performance between rookie/soph seasons @done
 - 11/13 -- TODO Presentation; Extract pagerank, clusters from network
 	- Get all players, coaches, RAPM scores from database @done
 	- Put nodes into Gephi @done
 	- Run analysis in Gephi @done
 	- Review Gephi analysis with Jon/Zach @done
-	- Scrape player gamelogs for more granular relationship weights (find how many games together) @kicked off
+	- Build player gamelogs data pipeline @done
+		- Scrape for more granular relationship weights (find how many games together) @initialized (DONE 11/16)
 - 11/14 -- TODO Tighten up analyses
 	- Finish sophomore seasons analysis @done
-		- Measure RAPM delta on players who did not share the same coach yoy
+		- Measure RAPM delta on players who did not share the same coach @done
 	- 3rd season analysis @done
 	- Investigate multiple testing @done
 	- Build relationships between players with gamelog data @postponed
-	- Scrape player seasonlogs for college (will assist in sourcing college coaches) @postponed
+	- Build college player data pipeline (for matching college coaches) @postponed
 	- Export Gephi interactive visual & analytics @done
 		- Export to gexf; get gephi_js folder for deploying on server; drop gexf into gephi_js; update config.js; deploy!
 	- NetworkX analysis with player-player connections @done
-		- PageRank; Flow; Eigen Centrality
+		- PageRank @done
+		- Flow; Eigen Centrality @postponed
 	- Export gamelog relationships into Neo4j for easier querying @postponed
-		- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections 
-- 11/15 -- TODO
-	- Scrape college coach performances
+		- Dump nodes and edges into Neo4j to allow ppl to query for multiple connections
+- 11/15 -- TODO Build, collect, process new data
+	- Build college coach data pipeline @done
+	- Scrape college coach performances @initialized (DONE 11/16)
+- 11/16 -- TODO Presentation
+	- Presentation visuals @done
+	- Process player gamelogs data @done
+	- Process college coach pipeline @done
+- 11/17 -- TODO Analyze new player gamelog data
+	- Query/count games shared between players
+	
 	
 ##Data Pipeline
 Scrapy/Python --> csv --> clean --> Neo4j --> Maybe Gephi/Graphlab
+
+Scrapy/Python --> sqlite3 --> clean --> csv --> Neo4j
+Scrapy/Python --> sqlite3 --> clean --> Gephi
 
 Scrapy Crawl
 
