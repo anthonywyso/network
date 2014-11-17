@@ -82,11 +82,16 @@
 	- Scrape college coach performances @initialized (DONE 11/16)
 - 11/16 -- TODO Presentation
 	- Presentation visuals @done
-	- Process player gamelogs data @done
+	- Process player gamelogs data
+		- Issues... recent year records were not scraped
+		- 
 	- Process college coach pipeline @done
 - 11/17 -- TODO Analyze new player gamelog data
 	- Query/count games shared between players
-	
+	- Build player college data pipeline
+	- Presentation tuning
+		- Contextualize succinctly
+		- Clarify graphs and methods
 	
 ##Data Pipeline
 Scrapy/Python --> csv --> clean --> Neo4j --> Maybe Gephi/Graphlab

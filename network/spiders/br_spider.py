@@ -258,3 +258,34 @@ class PlayerGameLogSpider(CrawlSpider):
             loader_adv.add_value("player_id", re.findall("\w+\d", response.url)[0])
             loader_adv.add_value("season", re.findall("\d{4}", response.url)[0])
             yield loader_adv.load_item()
+
+
+class PlayerGameLogSpider_v2(PlayerGameLogSpider):
+    """
+    Retrieves all game-aggregated player records for active players in specific seasons
+    """
+    name = "players_gamelog_v2"
+    allowed_domains = ["basketball-reference.com"]
+    start_urls = ["".join(["http://www.basketball-reference.com/leagues/NBA_", str(year), "_totals.html"]) for year in range(1997, 2014+1)]
+    rules = (
+        Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='totals']/descendant::td/a[contains(@href, 'players')]"),
+             follow=True),
+        Rule(LxmlLinkExtractor(restrict_xpaths="//*[.='Game Logs']/parent::*/descendant::a[contains(@href, 'gamelog')]"),
+             follow=True, callback="parse_crawl"),
+    )
+
+
+# TODO implement this
+class PlayerCollegeSpider(CrawlSpider):
+    """
+    Retrieves all players in college universe
+    """
+    name = "players_college_scrape"
+    allowed_domains = ["sports-reference.com"]
+    start_urls = ["http://www.sports-reference.com/cbb/seasons/2014-school-stats.html"]
+    # rules = (
+    #     Rule(LxmlLinkExtractor(restrict_xpaths="//table/descendant::td[contains(@class, 'xx_large_text')]/a"),
+    #          follow=True, callback="parse_coaches"),
+    #     Rule(LxmlLinkExtractor(restrict_xpaths="//table[@id='coaches']/descendant::td/a[contains(@href, 'coaches')]"),
+    #          follow=True, callback="parse_crawl"),
+    # )
