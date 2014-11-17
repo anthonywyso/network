@@ -10,7 +10,7 @@ class CoachValue(object):
 
     def __init__(self, name, dbname='data/network.sqlite'):
         self.coach = name
-        self.size = (16, 10)
+        self.size = (16, 9)
         self.db = dbname
 
     def load_data(self):
@@ -52,7 +52,7 @@ class CoachValue(object):
 class CoachFirstYear(object):
 
     def __init__(self, dbname='data/network.sqlite'):
-        self.default_size = (16, 10)
+        self.default_size = (16, 9)
         self.db = dbname
 
     def load_data(self):
