@@ -14,7 +14,7 @@ def clean_values(feature):
     """
     # TODO exceptions.UnicodeEncodeError: 'ascii' codec can't encode character u'\xa0' in position 0: ordinal not in range(128)
     feature = feature.strip().lower()
-    feature = feature.replace('%', 'pct') # cleans feature formats
+    feature = feature.replace('%', 'pct')
     feature = feature.replace('3p', 'fg3')
     feature = feature.replace(' ', '_')
     feature = feature.replace('/', '_')

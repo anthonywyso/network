@@ -54,16 +54,6 @@ class CoachSeasonLogItem(Item):
     l = Field()
     standing = Field()
 
-# TODO implement this
-class CollegeCoachItem(Item):
-    name = Field()
-    id = Field()
-    gp = Field()
-    w = Field()
-    l = Field()
-    start = Field()
-    end = Field()
-
 
 class ValueItemLoader(ItemLoader):
     default_output_processor = TakeFirst()
